@@ -1,0 +1,1 @@
+export default require(`../appConfigs/${process.env.NODE_ENV}.config.js`)
