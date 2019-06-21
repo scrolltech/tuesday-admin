@@ -10,7 +10,7 @@
           </div>
           <div class="modal-body">
             <slot name="body">
-              Please proceed with logging in through CMS and refresh the current page.
+              Please proceed with logging here.
             </slot>
           </div>
           <div class="modal-footer">
