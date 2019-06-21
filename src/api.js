@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import axios from 'axios'
 import { getCookie } from './utils'
 import Config from './config'
@@ -13,6 +15,17 @@ const apiClient = axios.create({
   baseURL: Config.API_URL,
   timeout: 10000,
   headers
+});
+
+axios.interceptors.response.use(response => {
+  console.log('asd', response);
+  return response;
+}, error => {
+  console.log('error ', error);
+ if (error.response.status === 401) {
+  console.log('User is not logged');
+ }
+ return error;
 });
 
 export default {
