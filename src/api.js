@@ -25,9 +25,14 @@ apiClient.interceptors.response.use(response => {
 }, error => {
   if (error.response.status == 401) {
     console.log('first one');
-    Vue.$router.push('login');
+
+    if (Vue.$router) {
+      console.log('vue.$router is avaialble');
+      Vue.$router.push('login');
+    }
 
     console.log('second one');
+    console.log('router ', router);
     router.push('login');
 
   }
