@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { getCookie } from './utils'
 import Config from './config'
+import Vue from 'vue';
 
 const Authorization = getCookie(Config.SessionCookieName)
 
@@ -21,9 +22,9 @@ apiClient.interceptors.response.use(response => {
   console.log('asd', response);
   return response;
 }, error => {
-
-  console.log('error ', error);
- 
+  if (error.response.status == 401) {
+    Vue.$router.push('login');
+  }
  return error;
 });
 
