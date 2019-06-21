@@ -37,7 +37,10 @@ export default {
   methods: {
     getPublications() {
       $apiClient.getPublications().then((response) => {
+        console.log(response);
         this.publications = response.data;
+      }).then((error) => {
+        console.log('error ', error);
       })
     }
   }
