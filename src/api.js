@@ -17,7 +17,7 @@ const apiClient = axios.create({
   headers
 });
 
-axios.interceptors.response.use(response => {
+apiClient.interceptors.response.use(response => {
   console.log('asd', response);
   return response;
 }, error => {
