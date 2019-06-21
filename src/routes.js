@@ -9,8 +9,10 @@ import UserProfile from './components/users/UserProfile'
 import AssetRequestSectionWrapper from './components/assetRequests'
 import AssetRequestFeed from './components/assetRequests/AssetRequestFeed'
 
+import VueRouter from 'vue-router'
 
-export default [
+
+const routes = [
   { path: '/login', component: LoginPage },
   { path: '/', redirect: '/publication', meta: {protected: true}},
   { path: '/publication/:publication_id/:asset_id/status/:status', component: CommentFeed, meta: {protected: true}},
@@ -27,3 +29,10 @@ export default [
   { path: '/user', component: UserProfile, meta: {protected: true}},
   { path: '/*', component: ErrorPage}
 ]
+
+const router = new VueRouter({
+	mode: 'history',
+  routes
+});
+
+export default router;
