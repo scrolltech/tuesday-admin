@@ -72,10 +72,10 @@ export default {
   methods: {
     toggleSubhead (itemText) {
       // eslint-disable-next-line
-      console.log(this.visibilityMap)
+      
       this.visibilityMap[itemText] = !this.visibilityMap[itemText]
       // eslint-disable-next-line
-      console.log(this.visibilityMap)
+      
     },
     subheadAction (itemIndex) {
       if (this.items[itemIndex].indexOf('showSubhead') !== -1) {

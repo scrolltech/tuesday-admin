@@ -145,7 +145,6 @@ export default {
   },
   mounted () {
     let {publication_id, asset_id, status} = this.$route.params
-    console.log(this.$route.params);
     this.baseUrl = `/publication/${publication_id}/${asset_id}`
     if (status) {
       this.activateTab(status)
