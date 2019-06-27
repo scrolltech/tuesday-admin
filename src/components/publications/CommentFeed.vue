@@ -30,23 +30,19 @@
               <v-flex xs12 v-for="(comment, i) in comments[tab.name]" :key="i">
                 <v-card 
                   color="darken-2" class="black--text">
-                  <v-layout row>
-                  <v-flex xs2>
-                    <v-list-tile-content class= 'align-center'
-                      @click="$router.push('/user/' + comment.commenter_id)"
-                    >
-                      {{ comment.commenter.name }}
+                  <v-layout row wrap>
+                  <v-flex xs12 sm10>
+                    <v-list-tile-content class="pa-3">
+                      <h4 class="commenter-name">
+                        {{ comment.commenter.name }}
+                      </h4>
+                      <div class="heading">
+                        <p>{{comment.content}}</p>
+                      </div>
                     </v-list-tile-content>
                   </v-flex>
     
-                  <v-flex xs8>
-                    <v-list-tile-content>
-                      <div class="heading">{{comment.content}}</div>
-                    </v-list-tile-content>
-                  </v-flex>
-    
-                  <v-flex xs2>
-                    
+                  <v-flex xs12 sm2 pl-3 class="control-icons">
                     <v-btn flat icon color="blue"
                       v-if="tab.name === 'pending'"
                       v-on:click="acceptComment(comment.id)"
@@ -145,6 +141,7 @@ export default {
   },
   mounted () {
     let {publication_id, asset_id, status} = this.$route.params
+    console.log(this.$route.params);
     this.baseUrl = `/publication/${publication_id}/${asset_id}`
     if (status) {
       this.activateTab(status)
