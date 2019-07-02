@@ -1,4 +1,4 @@
-<!-- eslint-disable -->
+<!-- eslint-disable 
 
 <template>
   <div id="assetRequestFeed">
@@ -120,3 +120,5 @@ export default {
 }
 
 </style>
+
+-->
