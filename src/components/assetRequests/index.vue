@@ -21,20 +21,14 @@
               outline
             ></v-text-field>
           </v-flex>
-
-          <v-radio-group v-model="radios" row :mandatory="true">
-            <v-radio label="Default" value="0"></v-radio>
-            <v-radio label="Manual" value="1"></v-radio>
-            <v-radio label="Automatic" value="2"></v-radio>
-          </v-radio-group>
-
+          
           <v-btn
             :loading="loading"
             :disabled="loading"
             color="info"
-            @click="loader = 'loading'"
+            v-on:click="submitAssetRequest()"
           >
-            Submit
+            Request
           </v-btn>
 
         </v-layout>
@@ -47,10 +41,10 @@
           <v-flex xs12 v-for="(publication, i) in publications" :key="i">
             <v-card 
               color=" darken-2" class="Black--text"
-              @click="$router.push(`${$route.path}/${publication.slug}`)">
+              @click="$router.push(`${$route.path}/${publication.id}`)">
               <v-card-title primary-title>
                 <div>
-                  <div class="headline">{{publication.label}}</div>
+                  <div class="headline">{{publication.name}}</div>
                 </div>
               </v-card-title>
             </v-card>
@@ -62,19 +56,40 @@
 </template>
 
 <script>
+
+  import $apiClient from '../../api';
+
   export default {
     data: () => {
       return {
+        valid: false,
         articleUrl: '',
         articleTitle: '',
-        radios: '0',
         loader: null,
         loading: false,
-        publications: [
-          {'slug': 'scroll', 'label': 'Scroll'}
-        ],
+        publications: [],
+        
       } 
     },
+    mounted () {
+      this.getPublications(this.$route.params)
+    },
+    methods: {
+      getPublications() {
+        $apiClient.getPublications().then((response) => {
+          this.publications = response.data;
+        })
+      },
+      submitAssetRequest () {
+        const data = { 'url': this.articleUrl, 'title': this.articleTitle, }
+        $apiClient.submitAssetRequest(data).then(response => {
+          if(response.status == 200) {
+            console.log('data', data);
+          }
+        })
+      },
+    },
+
     watch: {
       loader () {
         const l = this.loader

@@ -49,14 +49,7 @@ export default {
   name: 'Sidebar',
   data: () => ({
     items: [
-      { icon: 'notes', text: 'Publications', slug: 'publication',
-        showSubhead: false, 
-        subheads: [
-          { icon: 'mode_comment', text: 'Scroll', slug: 'scroll'},
-          { icon: 'group', text: 'Satyagrah', slug: 'satyagrah'},
-        ]
-      },
-      { icon: 'group', text: 'Users', slug: 'users'},
+      { icon: 'notes', text: 'Publications', slug: 'publication'},
       { icon: 'touch_app', text: 'Asset Requests', slug: 'assetrequest'},
     ],
     visibilityMap: {}
