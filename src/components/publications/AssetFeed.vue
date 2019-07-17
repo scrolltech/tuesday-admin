@@ -8,11 +8,11 @@
               color="darken-2" class="black--text asset-block"
               @click="$router.push(`${$route.path}/${asset.id}`)">
               <v-layout row>
-              <v-flex xs8>
+              <v-flex xs9 sm8>
                 <div class="headline">{{asset.title}}</div>
               </v-flex>
               
-              <v-flex xs4>
+              <v-flex xs3 sm4>
                   <v-badge class="status-badge" color="" right>
                     <template v-slot:badge class="dp">
                       <span class="black--text">{{asset.comments_count}}</span>

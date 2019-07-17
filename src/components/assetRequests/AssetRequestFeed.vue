@@ -61,7 +61,7 @@ export default {
   data: () => {
     return {
       assets: [],
-      publication: ['scroll', 'satyagrah'],
+      publication: [],
       activeTab: 'pending',
       requests: {
         pending: [],
@@ -72,26 +72,6 @@ export default {
         {name: 'pending', label: 'Pending', icon: 'local_parking', status: {value: 0}},
         {name: 'enabled', label: 'Enabled', icon: 'spellcheck', status: {value: 1}}
       ],
-      dummyAssets: {
-        'scroll': [{
-            id: 919647,
-            status: 0,
-            title: 'IPL 2019: When Mumbai Indians needed a miracle, captain Kieron Pollard turned back the clock',
-          }, {
-            id: 919648,
-            status: 1,
-            title: 'The Election Fix: The BJP starts off as clear front-runners. Why is the party so jittery?',
-          }],
-        'satyagrah': [{
-            id: 123321,
-            status: 0,
-            title: 'बालाकोट पर प्रधानमंत्री नरेंद्र मोदी का बयान आचार संहिता का उल्लंघन : चुनाव अधिकारी',
-          }, {
-            id: 123321,
-            status: 1,
-            title: 'अब बीमा हुआ बेहतर',
-          }]
-      }
     }
   },
   beforeMount () {

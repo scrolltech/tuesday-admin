@@ -28,7 +28,7 @@ export default {
   },
   watch:{
       $route () {
-          this.path = this.$route.path.slice(1).split('/')
+          this.path = this.$route.path.slice(1).split('/');
       }
   }
 }

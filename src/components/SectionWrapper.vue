@@ -13,7 +13,6 @@ export default {
     PublicationHomePage
   },
   mounted() {
-    // console.log(this.$route.params)
   }
 }
 </script>

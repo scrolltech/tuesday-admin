@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { getCookie } from './utils'
 import Config from './config'
+import router from './routes.js';
 
 const Authorization = getCookie(Config.SessionCookieName)
 
@@ -17,15 +18,14 @@ const apiClient = axios.create({
   headers
 });
 
-axios.interceptors.response.use(response => {
-  console.log('asd', response);
+apiClient.interceptors.response.use(response => {
   return response;
 }, error => {
-  console.log('error ', error);
- if (error.response.status === 401) {
-  console.log('User is not logged');
- }
- return error;
+  if (error.response.status === 401) {
+    window.location = "/login";
+  } else {
+    return error;
+  }
 });
 
 export default {
