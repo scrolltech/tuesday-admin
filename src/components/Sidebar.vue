@@ -12,8 +12,7 @@
       <v-list-tile
         v-else 
         :key="index"
-        :href="`/${item.slug}`"
-        @click="subheadAction(index)"
+        :to="`/${item.slug}`"
         >
         <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
@@ -49,14 +48,7 @@ export default {
   name: 'Sidebar',
   data: () => ({
     items: [
-      { icon: 'notes', text: 'Publications', slug: 'publication',
-        showSubhead: false, 
-        subheads: [
-          { icon: 'mode_comment', text: 'Scroll', slug: 'scroll'},
-          { icon: 'group', text: 'Satyagrah', slug: 'satyagrah'},
-        ]
-      },
-      { icon: 'group', text: 'Users', slug: 'users'},
+      { icon: 'notes', text: 'Publications', slug: 'publication'},
       { icon: 'touch_app', text: 'Asset Requests', slug: 'assetrequest'},
     ],
     visibilityMap: {}
@@ -76,11 +68,6 @@ export default {
       this.visibilityMap[itemText] = !this.visibilityMap[itemText]
       // eslint-disable-next-line
       
-    },
-    subheadAction (itemIndex) {
-      if (this.items[itemIndex].indexOf('showSubhead') !== -1) {
-        this.items[itemIndex].showSubhead = !this.items[itemIndex].showSubhead
-      }
     }
   }
 }

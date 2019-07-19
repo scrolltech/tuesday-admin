@@ -1,110 +1,135 @@
-<!-- eslint-disable -->
-
 <template>
   <div id="assetRequestFeed">
-    <v-tabs
-      centered
-      color="lighten-1"
-      icons-and-text
-    >
-      <v-tabs-slider color="black"></v-tabs-slider>
-      
-      <v-tab xs4 
-        v-for="(tab, index) in tabs"
-        :key="index"
-        :href="`#${tab.name}`"
-        :data-tab="tab.name"
-        v-on:click="$router.push(`${baseUrl}/status/${tab.name}`)"
-      >
-        {{tab.label}}
-        <v-icon>{{tab.icon}}</v-icon>
-      </v-tab>
-
-      <v-tab-item
-
-        v-for="(tab, index) in tabs"
-        :key="index"
-        :value="tab.name"
-      >
-        <v-card>
-          <v-container fluid grid-list-lg>
-            <v-layout row wrap>
-              <v-flex xs12 v-for="(asset, i) in assets" :key="i" v-if="asset.status === tab.status.value">
-                <v-card 
-                  color="blue-grey darken-2" class="white--text asset-block">
-                  <v-card-title primary-title>
-                    <div>
-                      <div class="headline">{{asset.title}}</div>
-                    </div>
-                  </v-card-title>
-                  <v-flex xs12>
-                    <v-btn color="primary" v-if="tab.name === 'pending'" dark
-                      v-on:click="enableAsset(asset.id)">Enable
-                      <v-icon dark right>check_circle</v-icon>
-                    </v-btn>
-                  </v-flex>
-
-                </v-card>
+    <v-card>
+      <v-container fluid grid-list-lg>
+        <v-layout row wrap>
+          <v-flex xs12 v-for="(assetRequest, i) in assetRequests" :key="i">
+            <v-card 
+              color="darken-2" class="black--text asset-block"
+              >
+              <v-layout row>
+              <v-flex xs9 sm8>
+                <div class="headline">{{assetRequest.title}}</div>
               </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card>
-      </v-tab-item>  
-    </v-tabs>
+              
+              <v-flex xs3 sm4>
+                <v-menu
+                  :close-on-content-click="false"
+                  :nudge-width="200"
+                  offset-x
+                  :ref="'menu' + i"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn flat
+                      color="indigo"
+                      dark
+                      v-on="on"
+                    >
+                      Accept
+                    </v-btn>
+                  </template>
+
+                  <v-card>
+                    <v-list>
+                      <v-list-tile>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Moderation Policy</v-list-tile-title>
+                          <v-list-tile-sub-title>Please select the modertion policy before accepting.</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+
+                    <v-divider></v-divider>
+
+                    <v-list>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-radio-group v-model="radios" row :mandatory="false">
+                            <v-radio label="Default" value="0"></v-radio>
+                            <v-radio label="Automatic" value="1"></v-radio>
+                            <v-radio label="Manual" value="2"></v-radio>
+                          </v-radio-group>
+                        </v-list-tile-action>
+                      </v-list-tile>
+                    </v-list>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn flat @click="onCancel(i)">Cancel</v-btn>
+                      <v-btn color="primary" flat @click="onCancel(i), acceptAssetRequest(assetRequest.id)">Accept</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-menu>
+
+                <v-btn flat color="red" dark
+                  v-on:click="rejectAssetRequest(assetRequest.id)"
+                >Decline
+                </v-btn>
+                <v-btn flat dark class="black--text"
+                  v-on:click="cancelAssetRequest(assetRequest.id)"
+                >Cancel
+                </v-btn>
+
+              </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-card>
   </div>
 </template>
 
 <script>
+import $apiClient from '../../api';
 
 export default {
   name: 'AssetRequestFeed',
   data: () => {
     return {
-      assets: [],
-      publication: [],
-      activeTab: 'pending',
-      requests: {
-        pending: [],
-        enabled: []
-      },
-      baseUrl: '',
-      tabs: [
-        {name: 'pending', label: 'Pending', icon: 'local_parking', status: {value: 0}},
-        {name: 'enabled', label: 'Enabled', icon: 'spellcheck', status: {value: 1}}
-      ],
+      assetRequests: [],
+      radios: '0',
     }
-  },
-  beforeMount () {
-    // this.getAllAssets()
-    // this.getEnabledAssets()
   },
   mounted () {
-    this.getAllAssets(this.$route.params.publication)
-    
-    let {publication, status} = this.$route.params
-    this.baseUrl = `/assetrequest/${publication}`
-    if (status) {
-      this.activateTab(status)
-    } else {
-      this.$router.push(`${this.baseUrl}/status/pending`)
-    }
+    this.getAllAssetRequests(this.$route.params.publication_id)
   },
   methods: {
-    getAllAssets(publication) {
-      this.assets = this.dummyAssets[publication]
+    getAllAssetRequests() {
+      $apiClient.getAllAssetRequests().then((response) => {
+        if (response.status == 200) {
+          this.assetRequests = response.data.filter(assetRequest => assetRequest.status === 0)
+        }
+      })
     },
-    activateTab (status) {
-      let tab = document.querySelector(`div[data-tab='${status}'] a`)
-      tab.click()
+
+    acceptAssetRequest(id) {
+      const data = { 'moderation_policy': this.radios }
+      $apiClient.acceptAssetRequest(id, data).then(response => {
+        if (response.status == 200) {
+          this.assetRequests = this.assetRequests.filter(assetRequest => assetRequest.status === 0)
+        }
+      })
     },
-    enableAsset (assetId) {
-      let assetIndex = this.assets.findIndex(asset => asset.id === assetId)
-      let asset = this.assets[assetIndex]
-      asset.status = 1
+    rejectAssetRequest (id) {
+      $apiClient.rejectAssetRequest(id).then(response => {
+        if (response.status == 200 ) {
+          this.assetRequests = this.assetRequests.filter(assetRequest => assetRequest.id !== id)
+        }     
+      })
     },
-    // getEnabledAssets () {
-    //   this.assets.enabled = []
-    // },
+    cancelAssetRequest (id) {
+      $apiClient.cancelAssetRequest(id).then(response => {
+        if (response.status == 200 ) {
+          this.assetRequests = this.assetRequests.filter(assetRequest => assetRequest.id !== id)
+        }     
+      })
+    },
+
+    onCancel (i) {
+      this.$refs['menu' + i][0].isActive = false
+    }
   }
 }
 </script>
@@ -119,4 +144,9 @@ export default {
   padding-bottom: 10px
 }
 
+.v-badge {
+  width: 48px;
+  margin: 0 20px;
+  padding-top: 10px;
+}
 </style>

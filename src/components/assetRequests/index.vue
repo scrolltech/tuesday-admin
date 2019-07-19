@@ -1,15 +1,50 @@
+<!-- eslint-disable -->
 <template>
-  <div id="articleFeed">
+  <div id="assetrequest">
+    <v-form v-model="valid">
+      <v-container fluid grid-list-lg>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-text-field
+              v-model="articleUrl"
+              label="Article URL"
+              required
+              outline
+            ></v-text-field>
+          </v-flex>
+
+          <v-flex xs12>
+            <v-text-field
+              v-model="articleTitle"
+              label="Article Title"
+              required
+              outline
+            ></v-text-field>
+          </v-flex>
+
+          <v-btn
+            :loading="loading"
+            :disabled="loading"
+            color="info"
+            v-on:click="submitAssetRequest()"
+          >
+            Request
+          </v-btn>
+
+        </v-layout>
+      </v-container>
+    </v-form>
+    
     <v-card>
       <v-container fluid grid-list-lg>
         <v-layout row wrap>
           <v-flex xs12 v-for="(publication, i) in publications" :key="i">
             <v-card 
-              color="blue-grey darken-2" class="white--text"
-              @click="$router.push(`${$route.path}/${publication.slug}`)">
+              color=" darken-2" class="Black--text"
+              @click="$router.push(`${$route.path}/${publication.id}`)">
               <v-card-title primary-title>
                 <div>
-                  <div class="headline">{{publication.label}}</div>
+                  <div class="headline">{{publication.name}}</div>
                 </div>
               </v-card-title>
             </v-card>
@@ -22,46 +57,55 @@
 
 <script>
 
-export default {
-  name: 'Publication',
-  data: () => {
-    return {
-      publications: [
-        {'slug': 'scroll', 'label': 'Scroll'},
-        {'slug': 'satyagrah', 'label': 'Satyagrah'}
-      ]
-    }
-  },
-  mounted () {
-    // eslint-disable-next-line
-    console.log(this.$route.params.path)
-    this.getArticles()
-    // eslint-disable-next-line
-    console.log(this.articles)
-  },
-  methods: {
-    getArticles() {
-      this.articles = [{
-        id: 123123,
-        title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
-        summary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
-      }, {
-        id: 321321,
-        title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
-        summary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
-      }, {
-        id: 321321,
-        title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
-        summary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
-      }, {
-        id: 321321,
-        title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
-        summary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.'
-      }]
+  import $apiClient from '../../api';
+
+  export default {
+    data: () => {
+      return {
+        valid: false,
+        articleUrl: '',
+        articleTitle: '',
+        loader: null,
+        loading: false,
+        publications: [],
+        requesting: false
+        
+      } 
+    },
+    mounted () {
+      this.getPublications(this.$route.params)
+    },
+    methods: {
+      getPublications() {
+        $apiClient.getPublications().then((response) => {
+          this.publications = response.data;
+        })
+      },
+      submitAssetRequest () {
+        const data = { 'url': this.articleUrl, 'title': this.articleTitle, }
+        this.requesting = true;
+        $apiClient.submitAssetRequest(data).then(response => {
+          this.requesting = false;
+          if(response.status == 200) {
+            this.articleUrl = '',
+            this.articleTitle = ''
+          } else if (respose.status >= 400) {
+            this.articleUrl = '',
+            this.articleTitle = ''
+          }
+        }).catch(() => this.requesting = false)
+      },
+    },
+
+    watch: {
+      loader () {
+        const l = this.loader
+        this[l] = !this[l]
+
+        setTimeout(() => (this[l] = false), 3000)
+
+        this.loader = null
+      }
     }
   }
-}
 </script>
-
-<style scoped>
-</style>

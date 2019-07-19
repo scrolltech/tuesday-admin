@@ -35,9 +35,6 @@ export default {
   getAllAssets (publication_id) {
     return apiClient.get('/publications/' + publication_id + '/assets')
   },
-  getAllAssetsRequest () {
-    return apiClient.get('/assetrequests')
-  },
   getPendingComments (asset_id) {
     return apiClient.get('/comments/pending?asset_id=' + asset_id + '&page=&size')
   },
@@ -49,6 +46,10 @@ export default {
   },
   getEditorspickComments (asset_id) {
     return apiClient.get('/comments/?asset_id=' + asset_id + '&editors_pick=true')
+  },
+
+  getAllAssetRequests () {
+    return apiClient.get('/assetrequests')
   },
 
 
@@ -66,5 +67,25 @@ export default {
   },
   revertDeclinedComment (id) {
     return apiClient.post('/comments/rejected/' + id + '/revert')
-  }
+  },
+
+  submitAssetRequest (data) {
+    return apiClient.post('/assetrequests/', data)
+  },
+  acceptAssetRequest (id, data) {
+    return apiClient.post('/assetrequests/' + id + '/approve', data)
+  },
+  rejectAssetRequest (id) {
+    return apiClient.post('/assetrequests/' + id + '/reject')
+  },
+  cancelAssetRequest (id) {
+    return apiClient.post('/assetrequests/' + id + '/cancel')
+  },
+
+  // openAsset (id) {
+  //   return apiClient.post('/assets/' + id + '/restart')
+  // },
+  // closeAsset (id) {
+  //   return apiClient.post('/assets/' + id + '/stop')
+  // }
 }

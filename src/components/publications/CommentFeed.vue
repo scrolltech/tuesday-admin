@@ -45,7 +45,7 @@
                   <v-flex xs12 sm2 pl-3 class="control-icons">
                     <v-btn flat icon color="blue"
                       v-if="tab.name === 'pending'"
-                      v-on:click="acceptComment(comment.id)"
+                      v-on:click="approveComment(comment.id)"
                       dark title="Accept"
                     >
                       <v-icon>check_circle</v-icon>
@@ -121,7 +121,7 @@ export default {
       baseUrl: '',
       tabs: [
         {name: 'pending', label: 'Pending', icon: 'local_parking'},
-        {name: 'approved', label: 'Approved', icon: 'spellcheck'},
+        {name: 'approved', label: 'Approved', icon: 'verified_user'},
         {name: 'editorspick', label: 'Editors Pick', icon: 'star'},
         {name: 'declined', label: 'Declined', icon: 'block'}
       ],
@@ -141,7 +141,6 @@ export default {
   },
   mounted () {
     let {publication_id, asset_id, status} = this.$route.params
-    console.log(this.$route.params);
     this.baseUrl = `/publication/${publication_id}/${asset_id}`
     if (status) {
       this.activateTab(status)
@@ -161,7 +160,7 @@ export default {
       this.$router.push(`${this.baseUrl}/status/${tabName}`)
       this[`get${this.capitalize(tabName)}Comments`](this.$route.params.asset_id) 
     },
-    acceptComment (commentId) {
+    approveComment (commentId) {
       $apiClient.approveComment(commentId).then(response => {
         if (response.status == 200 ) {
           this.comments.pending = this.comments.pending.filter(comment => comment.id !== commentId)

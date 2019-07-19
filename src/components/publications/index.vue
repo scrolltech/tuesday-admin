@@ -27,8 +27,7 @@ export default {
   name: 'Publication',
    data: () => {
     return {
-      publications: [
-      ],
+      publications: [],
     }
   },
   mounted () {
