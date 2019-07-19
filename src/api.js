@@ -72,20 +72,20 @@ export default {
   submitAssetRequest (data) {
     return apiClient.post('/assetrequests/', data)
   },
-  acceptAssetRequest (asset_id) {
-    return apiClient.post('/assetrequests/' + asset_id + '/approve')
+  acceptAssetRequest (id, data) {
+    return apiClient.post('/assetrequests/' + id + '/approve', data)
   },
-  rejectAssetRequest (asset_id) {
-    return apiClient.post('/assetrequests/' + asset_id + '/reject')
+  rejectAssetRequest (id) {
+    return apiClient.post('/assetrequests/' + id + '/reject')
   },
-  cancelAssetRequest (asset_id) {
-    return apiClient.post('/assetrequests/' + asset_id + '/cancel')
+  cancelAssetRequest (id) {
+    return apiClient.post('/assetrequests/' + id + '/cancel')
   },
 
-  openAsset (asset_id) {
-    return apiClient.post('/assets/' + asset_id + '/restart')
-  },
-  closeAsset (asset_id) {
-    return apiClient.post('/assets/' + asset_id + '/stop')
-  }
+  // openAsset (id) {
+  //   return apiClient.post('/assets/' + id + '/restart')
+  // },
+  // closeAsset (id) {
+  //   return apiClient.post('/assets/' + id + '/stop')
+  // }
 }

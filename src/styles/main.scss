@@ -33,6 +33,9 @@ h4.commenter-name {
     opacity: .8;
 }
 
+.v-menu {
+    position: absolute;
+}
 @media screen and (max-width: 600px) {
     .control-icons {
         margin: -8px auto 10px 10px;

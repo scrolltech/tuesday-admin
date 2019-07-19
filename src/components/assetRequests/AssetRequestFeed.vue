@@ -57,17 +57,17 @@
                       <v-spacer></v-spacer>
 
                       <v-btn flat @click="onCancel(i)">Cancel</v-btn>
-                      <v-btn color="primary" flat @click="onCancel(i)">Accept</v-btn>
+                      <v-btn color="primary" flat @click="onCancel(i), acceptAssetRequest(assetRequest.id)">Accept</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-menu>
 
                 <v-btn flat color="red" dark
-                  v-on:click="rejectAssetRequest(assetRequest.asset_id)"
+                  v-on:click="rejectAssetRequest(assetRequest.id)"
                 >Decline
                 </v-btn>
                 <v-btn flat dark class="black--text"
-                  v-on:click="cancelAssetRequest(assetRequest.asset_id)"
+                  v-on:click="cancelAssetRequest(assetRequest.id)"
                 >Cancel
                 </v-btn>
 
@@ -98,24 +98,31 @@ export default {
   methods: {
     getAllAssetRequests() {
       $apiClient.getAllAssetRequests().then((response) => {
-        this.assetRequests = response.data;
-        console.log('data', response.data);
+        if (response.status == 200) {
+          this.assetRequests = response.data.filter(assetRequest => assetRequest.status === 0)
+        }
       })
     },
 
-    rejectAssetRequest (asset_id) {
-      $apiClient.rejectAssetRequest(asset_id).then(response => {
+    acceptAssetRequest(id) {
+      const data = { 'moderation_policy': this.radios }
+      $apiClient.acceptAssetRequest(id, data).then(response => {
+        if (response.status == 200) {
+          this.assetRequests = this.assetRequests.filter(assetRequest => assetRequest.status === 0)
+        }
+      })
+    },
+    rejectAssetRequest (id) {
+      $apiClient.rejectAssetRequest(id).then(response => {
         if (response.status == 200 ) {
-          console.log('reject request worked');
-          // this.comments.pending = this.comments.pending.filter(comment => comment.id !== commentId)
+          this.assetRequests = this.assetRequests.filter(assetRequest => assetRequest.id !== id)
         }     
       })
     },
-    cancelAssetRequest (asset_id) {
-      $apiClient.cancelAssetRequest(asset_id).then(response => {
+    cancelAssetRequest (id) {
+      $apiClient.cancelAssetRequest(id).then(response => {
         if (response.status == 200 ) {
-          console.log('cancel request worked');
-          // this.comments.pending = this.comments.pending.filter(comment => comment.id !== commentId)
+          this.assetRequests = this.assetRequests.filter(assetRequest => assetRequest.id !== id)
         }     
       })
     },

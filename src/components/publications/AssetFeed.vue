@@ -26,7 +26,7 @@
         <v-card>
           <v-container fluid grid-list-lg>
             <v-layout row wrap>
-              <v-flex xs12 v-for="(asset, i) in assets" :key="i">
+              <v-flex xs12 v-for="(asset, i) in getAssetsByTab(tab.name)" :key="i">
                 <v-card 
                   color="darken-2" class="black--text asset-block"
                   @click="$router.push(`${$route.path}/${asset.id}`)">
@@ -36,24 +36,37 @@
                   </v-flex>
                   
                   <v-flex xs3 sm4>
-                      <v-badge class="status-badge" color="" right>
-                        <template v-slot:badge class="dp">
-                          <span class="black--text">{{asset.comments_count}}</span>
-                        </template>
-                        <v-icon color="blue">comment</v-icon>
-                      </v-badge>
-                      <v-badge class="status-badge" color="" right>
-                        <template v-slot:badge>
-                          <span class="black--text">{{asset.pending_comments_count}}</span>
-                        </template>
-                        <v-icon color="yellow">local_parking</v-icon>
-                      </v-badge>
-                      <v-badge class="status-badge" color="" right>
-                        <template v-slot:badge>
-                          <span class="black--text">{{asset.rejected_comments_count}}</span>
-                        </template>
-                        <v-icon color="red">delete</v-icon>
-                      </v-badge>
+                    <v-badge class="status-badge" color="" right>
+                      <template v-slot:badge class="dp">
+                        <span class="black--text">{{asset.comments_count}}</span>
+                      </template>
+                      <v-icon color="blue">comment</v-icon>
+                    </v-badge>
+                    <v-badge v-if="tab.name === 'open'" class="status-badge" color="" right>
+                      <template v-slot:badge>
+                        <span class="black--text">{{asset.pending_comments_count}}</span>
+                      </template>
+                      <v-icon color="yellow">local_parking</v-icon>
+                    </v-badge>
+                    <v-badge v-if="tab.name === 'open'" class="status-badge" color="" right>
+                      <template v-slot:badge>
+                        <span class="black--text">{{asset.rejected_comments_count}}</span>
+                      </template>
+                      <v-icon color="red">delete</v-icon>
+                    </v-badge>
+
+                    <!-- <v-btn flat icon color="red"
+                      v-if="tab.name === 'open'"
+                      v-on:click.stop="closeAsset(asset.id)"
+                      dark title="close"
+                    >
+                      <v-icon>highlight_off</v-icon>
+                    </v-btn>
+                    <v-btn  flat dark color="green"
+                      v-if="tab.name === 'closed'"
+                      v-on:click.stop="openAsset(asset.id)"
+                    >Restart
+                    </v-btn> -->
                   </v-flex>
                   </v-layout>
                 </v-card>
@@ -89,7 +102,27 @@ export default {
       $apiClient.getAllAssets(publication_id).then((response) => {
         this.assets = response.data;
       })
-    }
+    },
+    getAssetsByTab (tabName) {
+      return this.assets.filter(asset => tabName == 'open' ? !asset.commenting_closed : asset.commenting_closed )
+    },
+    // openAsset(id) {
+    //   $apiClient.openAsset(id).then(response => {
+    //     if (response.status == 200) {
+    //       console.log('restart asset worked');
+    //       this.assets = this.assets.filter(asset => asset.commenting_closed === true)
+    //     }
+    //   })
+    // },
+    // closeAsset(id) {
+    //   $apiClient.closeAsset(id).then(response => {
+    //     if (response.status == 200) {
+    //       console.log(this);
+    //       console.log('restart asset worked');
+    //       this.assets = this.assets.filter(asset => asset.commenting_closed === false)
+    //     } 
+    //   })
+    // }
   }
 }
 </script>

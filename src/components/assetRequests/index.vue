@@ -21,7 +21,7 @@
               outline
             ></v-text-field>
           </v-flex>
-          
+
           <v-btn
             :loading="loading"
             :disabled="loading"
@@ -68,6 +68,7 @@
         loader: null,
         loading: false,
         publications: [],
+        requesting: false
         
       } 
     },
@@ -82,11 +83,17 @@
       },
       submitAssetRequest () {
         const data = { 'url': this.articleUrl, 'title': this.articleTitle, }
+        this.requesting = true;
         $apiClient.submitAssetRequest(data).then(response => {
+          this.requesting = false;
           if(response.status == 200) {
-            console.log('data', data);
+            this.articleUrl = '',
+            this.articleTitle = ''
+          } else if (respose.status >= 400) {
+            this.articleUrl = '',
+            this.articleTitle = ''
           }
-        })
+        }).catch(() => this.requesting = false)
       },
     },
 

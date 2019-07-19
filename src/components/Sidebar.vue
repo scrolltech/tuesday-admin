@@ -12,8 +12,7 @@
       <v-list-tile
         v-else 
         :key="index"
-        :href="`/${item.slug}`"
-        @click="subheadAction(index)"
+        :to="`/${item.slug}`"
         >
         <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
@@ -69,11 +68,6 @@ export default {
       this.visibilityMap[itemText] = !this.visibilityMap[itemText]
       // eslint-disable-next-line
       
-    },
-    subheadAction (itemIndex) {
-      if (this.items[itemIndex].indexOf('showSubhead') !== -1) {
-        this.items[itemIndex].showSubhead = !this.items[itemIndex].showSubhead
-      }
     }
   }
 }
