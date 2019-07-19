@@ -1,12 +1,13 @@
 <!-- eslint-disable -->
 <template>
   <div id="assetrequest">
-    <v-form v-model="valid">
+    <v-form ref="form" @submit.prevent="submit" v-model="valid">
       <v-container fluid grid-list-lg>
         <v-layout row wrap>
           <v-flex xs12>
             <v-text-field
-              v-model="articleUrl"
+              v-model="form.articleUrl"
+              :rules="rules.articleUrl"
               label="Article URL"
               required
               outline
@@ -15,7 +16,8 @@
 
           <v-flex xs12>
             <v-text-field
-              v-model="articleTitle"
+              v-model="form.articleTitle"
+              :rules="rules.articleTitle"
               label="Article Title"
               required
               outline
@@ -23,8 +25,7 @@
           </v-flex>
 
           <v-btn
-            :loading="loading"
-            :disabled="loading"
+            :disabled="!formIsValid"
             color="info"
             v-on:click="submitAssetRequest()"
           >
@@ -61,37 +62,53 @@
 
   export default {
     data: () => {
-      return {
-        valid: false,
+      const defaultForm = Object.freeze({
         articleUrl: '',
         articleTitle: '',
-        loader: null,
-        loading: false,
+      })
+      return {
+        valid: false,
         publications: [],
-        requesting: false
-        
+        requesting: false,
+        required: true,
+        form: Object.assign({}, defaultForm),
+        rules: {
+          articleUrl: [val => (val || '').length > 0 || 'This field is required'],
+          articleTitle: [val => (val || '').length > 0 || 'This field is required']
+        },
+        defaultForm
       } 
     },
+    computed: {
+      formIsValid () {
+        return (
+          this.form.articleUrl &&
+          this.form.articleTitle 
+        )
+      }
+    },
+
     mounted () {
       this.getPublications(this.$route.params)
     },
     methods: {
+       resetForm () {
+        this.form = Object.assign({}, this.defaultForm)
+        this.$refs.form.reset()
+       },
+
       getPublications() {
         $apiClient.getPublications().then((response) => {
           this.publications = response.data;
         })
       },
       submitAssetRequest () {
-        const data = { 'url': this.articleUrl, 'title': this.articleTitle, }
+        const data = { 'url': this.form.articleUrl, 'title': this.form.articleTitle, }
         this.requesting = true;
         $apiClient.submitAssetRequest(data).then(response => {
           this.requesting = false;
           if(response.status == 200) {
-            this.articleUrl = '',
-            this.articleTitle = ''
-          } else if (respose.status >= 400) {
-            this.articleUrl = '',
-            this.articleTitle = ''
+            this.resetForm();
           }
         }).catch(() => this.requesting = false)
       },
