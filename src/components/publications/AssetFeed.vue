@@ -55,7 +55,7 @@
                       <v-icon color="red">delete</v-icon>
                     </v-badge>
 
-                    <!-- <v-btn flat icon color="red"
+                    <v-btn flat icon color="red"
                       v-if="tab.name === 'open'"
                       v-on:click.stop="closeAsset(asset.id)"
                       dark title="close"
@@ -66,7 +66,7 @@
                       v-if="tab.name === 'closed'"
                       v-on:click.stop="openAsset(asset.id)"
                     >Restart
-                    </v-btn> -->
+                    </v-btn>
                   </v-flex>
                   </v-layout>
                 </v-card>
@@ -106,23 +106,20 @@ export default {
     getAssetsByTab (tabName) {
       return this.assets.filter(asset => tabName == 'open' ? !asset.commenting_closed : asset.commenting_closed )
     },
-    // openAsset(id) {
-    //   $apiClient.openAsset(id).then(response => {
-    //     if (response.status == 200) {
-    //       console.log('restart asset worked');
-    //       this.assets = this.assets.filter(asset => asset.commenting_closed === true)
-    //     }
-    //   })
-    // },
-    // closeAsset(id) {
-    //   $apiClient.closeAsset(id).then(response => {
-    //     if (response.status == 200) {
-    //       console.log(this);
-    //       console.log('restart asset worked');
-    //       this.assets = this.assets.filter(asset => asset.commenting_closed === false)
-    //     } 
-    //   })
-    // }
+    openAsset(id) {
+      $apiClient.openAsset(id).then(response => {
+        if (response.status == 200) {
+          this.assets = this.assets.filter(asset => asset.commenting_closed === true)
+        }
+      })
+    },
+    closeAsset(id) {
+      $apiClient.closeAsset(id).then(response => {
+        if (response.status == 200) {
+          this.assets = this.assets.filter(asset => asset.commenting_closed === false)
+        } 
+      })
+    }
   }
 }
 </script>

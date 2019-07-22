@@ -82,10 +82,10 @@ export default {
     return apiClient.post('/assetrequests/' + id + '/cancel')
   },
 
-  // openAsset (id) {
-  //   return apiClient.post('/assets/' + id + '/restart')
-  // },
-  // closeAsset (id) {
-  //   return apiClient.post('/assets/' + id + '/stop')
-  // }
+  openAsset (id) {
+    return apiClient.post('/assets/' + id + '/restart')
+  },
+  closeAsset (id) {
+    return apiClient.post('/assets/' + id + '/stop')
+  }
 }
