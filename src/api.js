@@ -33,7 +33,7 @@ export default {
     return apiClient.get('/publications')
   },
   getAllAssets (publication_id) {
-    return apiClient.get('/publications/' + publication_id + '/assets')
+    return apiClient.get('/publications/' + publication_id + '/assets?limit=1000')
   },
   getPendingComments (asset_id) {
     return apiClient.get('/comments/pending?asset_id=' + asset_id + '&page=&size')
