@@ -56,8 +56,8 @@ export default {
   approveComment (id) {
     return apiClient.post('/comments/pending/' + id + '/approve')
   },
-  declineComment (id) {
-    return apiClient.post('/comments/pending/' + id + '/reject')
+  declineComment (id, data) {
+    return apiClient.post('/comments/pending/' + id + '/reject', data)
   },
   enableComment (id) {
     return apiClient.get('/assetrequests/' + id + '/approve')
