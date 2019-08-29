@@ -50,14 +50,68 @@
                     >
                       <v-icon>check_circle</v-icon>
                     </v-btn>
-
-                    <v-btn flat icon color="red"
-                      v-if="tab.name !== 'declined' && tab.name !== 'editorspick' && tab.name !== 'approved'"
-                      v-on:click="declineComment(comment.id)"
-                      dark title="Decline"
+                    
+                    <v-menu
+                      :close-on-content-click="false"
+                      :nudge-width="200"
+                      offset-x
+                      :ref="'menu' + i"
                     >
-                      <v-icon>block</v-icon>
-                    </v-btn>
+                      <template v-slot:activator="{ on }">
+                        <v-btn flat icon
+                          v-if="tab.name !== 'declined' && tab.name !== 'editorspick' && tab.name !== 'approved'"
+                          color="red"
+                          dark title="Decline"
+                          v-on="on"
+                        >
+                          <v-icon>block</v-icon>
+                        </v-btn>
+                      </template>
+
+                      <v-card class="card-width">
+                        <v-card-text>
+                          <v-list>
+                            <v-list-tile>
+                              <v-list-tile-content>
+                                <v-list-tile-title>Rejection Reason</v-list-tile-title>
+                                <v-list-tile-sub-title>Please select the reason for rejection.</v-list-tile-sub-title>
+                              </v-list-tile-content>
+                            </v-list-tile>
+                          </v-list>
+
+                          <v-divider></v-divider>
+
+                          <v-list>
+                            <v-list-tile>
+                              <v-list-tile-action>
+                                <v-radio-group v-model="radios" row :mandatory="true">
+                                  <v-radio class="v-radio" color="red" label="Spam" value="0"></v-radio>
+                                  <v-radio class="v-radio" color="red" label="No-Value" value="1"></v-radio>
+                                  <v-radio class="v-radio" color="red" label="Offensive" value="2"></v-radio>
+                                  <v-radio class="v-radio" color="red" label="Irrelavant" value="3"></v-radio>
+                                  <v-radio class="v-radio" color="red" label="Others" value="4"></v-radio>
+                                  <v-text-field
+                                    :disabled="!othersSelected"
+                                    class="text-field"
+                                    v-model="note"
+                                    label="Specify reason if others"
+                                  ></v-text-field>
+                                </v-radio-group>
+                              </v-list-tile-action>
+                            </v-list-tile>
+                          </v-list>
+                          
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+
+                            <v-btn flat @click="onCancel(i)">Cancel</v-btn>
+                            <v-btn 
+                              :disabled="!isFormValid"
+                              color="red" flat @click="onCancel(i), declineComment(comment.id)">Reject</v-btn>
+                          </v-card-actions>
+                        </v-card-text>
+                      </v-card>
+                    </v-menu>
 
                     <v-btn flat icon color="orange"
                       v-if="tab.name === 'approved' && comment.editors_pick"
@@ -112,6 +166,9 @@ export default {
   data: () => {
     return {
       activeTab: 'pending',
+      radios: '',
+      note: '',
+      row: null,
       comments: {
         pending: [],
         approved: [],
@@ -138,6 +195,18 @@ export default {
     this.getApprovedComments(this.$route.params.asset_id)
     this.getEditorspickComments(this.$route.params.asset_id)
     this.getDeclinedComments(this.$route.params.asset_id)
+  },
+  computed: {
+    isFormValid () {
+      return (
+        this.radios
+      )
+    },
+    othersSelected () {
+      return (
+        this.radios === "4"
+      )
+    }
   },
   mounted () {
     let {publication_id, asset_id, status} = this.$route.params
@@ -168,7 +237,8 @@ export default {
       })
     },
     declineComment (commentId) {
-      $apiClient.declineComment(commentId).then(response => {
+      const data = { 'reason': Number(this.radios), 'note': this.note }
+      $apiClient.declineComment(commentId, data).then(response => {
         if (response.status == 200) {
           this.comments.pending = this.comments.pending.filter(comment => comment.id !== commentId)
         }
@@ -220,10 +290,20 @@ export default {
       $apiClient.getDeclinedComments(asset_id).then((response) => {
         this.comments.declined = response.data;
       })
+    },
+    onCancel (i) {
+      this.$refs['menu' + i][0].isActive = false
     }
   }
 }
 </script>
 
 <style scoped>
+  .card-width {
+    width: 518px
+  }
+  .text-field {
+     padding: 15px;
+     margin: 0px;
+  }
 </style>
