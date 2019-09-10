@@ -89,6 +89,7 @@
                                   <v-radio class="v-radio" color="red" label="No-Value" value="1"></v-radio>
                                   <v-radio class="v-radio" color="red" label="Offensive" value="2"></v-radio>
                                   <v-radio class="v-radio" color="red" label="Irrelavant" value="3"></v-radio>
+                                  <v-radio class="v-radio" color="red" label="Whataboutery" value="5"></v-radio>
                                   <v-radio class="v-radio" color="red" label="Others" value="4"></v-radio>
                                   <v-text-field
                                     :disabled="!othersSelected"
@@ -300,7 +301,7 @@ export default {
 
 <style scoped>
   .card-width {
-    width: 518px
+    width: 665px
   }
   .text-field {
      padding: 15px;
