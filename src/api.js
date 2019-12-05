@@ -29,63 +29,66 @@ apiClient.interceptors.response.use(response => {
 });
 
 export default {
-  getPublications () {
+  getPublications() {
     return apiClient.get('/publications')
   },
-  getAllAssets (publication_id) {
+  getAllAssets(publication_id) {
     return apiClient.get('/publications/' + publication_id + '/assets?limit=1000')
   },
-  getPendingComments (asset_id) {
+  getPendingComments(asset_id) {
     return apiClient.get('/comments/pending?asset_id=' + asset_id + '&page=&size')
   },
-  getApprovedComments (asset_id) {
+  getApprovedComments(asset_id) {
     return apiClient.get('/comments/?asset_id=' + asset_id + '&page=&size')
   },
-  getDeclinedComments (asset_id) {
+  getDeclinedComments(asset_id) {
     return apiClient.get('/comments/rejected/?asset_id=' + asset_id + '&page=&size')
   },
-  getEditorspickComments (asset_id) {
+  getEditorspickComments(asset_id) {
     return apiClient.get('/comments/?asset_id=' + asset_id + '&editors_pick=true')
   },
 
-  getAllAssetRequests () {
+  getAllAssetRequests() {
     return apiClient.get('/assetrequests')
   },
 
 
-  approveComment (id) {
+  approveComment(id) {
     return apiClient.post('/comments/pending/' + id + '/approve')
   },
-  declineComment (id, data) {
+  declineComment(id, data) {
     return apiClient.post('/comments/pending/' + id + '/reject', data)
   },
-  enableComment (id) {
+  enableComment(id) {
     return apiClient.get('/assetrequests/' + id + '/approve')
   },
-  pickComment (id, editors_pick) {
-    return apiClient.patch('/comments/' + id, {editors_pick})
+  pickComment(id, editors_pick) {
+    return apiClient.patch('/comments/' + id, { editors_pick })
   },
-  revertDeclinedComment (id) {
-    return apiClient.post('/comments/rejected/' + id + '/revert')
+  approveDeclinedComment(id) {
+    return apiClient.post('/comments/rejected/' + id + '/approve')
+  },
+  declineApproveComment(id) {
+    return apiClient.post('/comments/approved/' + id + '/reject')
   },
 
-  submitAssetRequest (data) {
+  submitAssetRequest(data) {
     return apiClient.post('/assetrequests/', data)
   },
-  acceptAssetRequest (id, data) {
+  acceptAssetRequest(id, data) {
     return apiClient.post('/assetrequests/' + id + '/approve', data)
   },
-  rejectAssetRequest (id) {
+  rejectAssetRequest(id) {
     return apiClient.post('/assetrequests/' + id + '/reject')
   },
-  cancelAssetRequest (id) {
+  cancelAssetRequest(id) {
     return apiClient.post('/assetrequests/' + id + '/cancel')
   },
 
-  openAsset (id) {
+  openAsset(id) {
     return apiClient.post('/assets/' + id + '/restart')
   },
-  closeAsset (id) {
+  closeAsset(id) {
     return apiClient.post('/assets/' + id + '/stop')
   }
 }
